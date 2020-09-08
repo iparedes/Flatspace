@@ -2,7 +2,7 @@
 import math
 import pygame as pg
 
-#test
+#test2222
 
 # mass in kg
 # radius in m
