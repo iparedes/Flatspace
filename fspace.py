@@ -2,8 +2,6 @@
 import math
 import pygame as pg
 
-#test2222
-
 # mass in kg
 # radius in m
 # orbit data in m
@@ -13,6 +11,13 @@ class Body:
         self.pos=pg.Vector2(0,0)
         self.mass=mass
         self.orbit=None
+        self.parent=None
+
+    def set_orbit(self,orbit,parent):
+        self.orbit=orbit
+        self.parent=parent
+        self.orbit.focus=parent.pos
+
 
 
 
@@ -36,7 +41,6 @@ class SSystem:
 class Orbit:
 
     def __init__(self,peri,apo,incl=0):
-
         if (peri>apo):
             (peri,apo)=(apo,peri)
 
@@ -49,6 +53,7 @@ class Orbit:
         # c: distance from center to focus
         self.a=(self.peri+self.apo)/2
         self.c=self.a-self.apo
-        self.b=math.sqrt((self.a**2)-(self.c**2))
+        self.b=int(math.sqrt((self.a**2)-(self.c**2)))
+        self.focus=None
 
 

@@ -7,6 +7,9 @@ class Pos:
     def __add__(self, other):
         return Pos(self.x+other.x,self.y+other.y)
 
+    def __sub__(self, other):
+        return Pos(self.x-other.x,self.y-other.y)
+
     def coords(self):
         return (self.x,self.y)
 

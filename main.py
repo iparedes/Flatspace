@@ -3,6 +3,7 @@ import pygame_gui
 from fspace import *
 from display import *
 from view import *
+from geometry import *
 
 ZOOM_FACTOR=10
 MOVE_FACTOR=20
@@ -24,16 +25,23 @@ def main():
     #     pg.time.delay(100)
 
     S=SSystem()
-    S.Sol.mass=2*10**30
-    S.Sol.radius=696000*10**6
-    P=Planet(mass=6*10**24,radius=6371*10**6)
-    O=Orbit(147*10**9,152*10**9)
-    P.pos.xy=900*10**9,0
-    P.orbit=O
-    S.Planets.append(P)
+#    S.Sol.mass=2*10**30
+#    S.Sol.radius=696000*10**6
+
+    # S.Sol.mass=2*10**30
+    # S.Sol.radius=7*10**9
+    #
+    # P=Planet(mass=6*10**24,radius=1*10**6)
+    # O=Orbit(1*10**10,1*10**11,30)
+    # P.set_orbit(O,S.Sol)
+    # P.pos.xy=1*10**11,0
+    # S.Planets.append(P)
 
 
     V=View(S,pg.Vector2(0,0),0.2*10**13)
+
+    V.display.draw_ellipse(Pos(50,50),100,50,45)
+    V.display.draw()
 
     is_running=True
     while is_running:
@@ -58,8 +66,11 @@ def main():
                         V.move(MOVE_FACTOR,0)
 
             V.display.manager.process_events(event)
+            mousex, mousey = pg.mouse.get_pos()
+            t=str(mousex)+' , '+str(mousey)
+            V.display.draw_text(V.display.WIDTH-200,10,t)
 
-        V.render()
+        #V.render()
         V.display.manager.update(time_delta)
         V.display.manager.draw_ui(V.display.screen)
         pg.display.flip()

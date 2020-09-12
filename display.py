@@ -3,6 +3,7 @@ import pygame_gui
 import sys
 from geometry import *
 import random
+import math
 
 
 SCREEN_RATIO=0.75 # 4:3
@@ -99,17 +100,47 @@ class Display:
 
 
     # Adds a ellipse to the surfaces to be blitted
-    # pos is a Vector2
+    # pos is a Pos, the center of the ellipse
     def draw_ellipse(self,pos,w,h,rot):
         surface = pg.Surface((w,h),pg.SRCALPHA, 32)
         surface = surface.convert_alpha()
         size = (0, 0, w,h)
-
         ellipse = pg.draw.ellipse(surface, WHITE, size,LINE_WIDTH)
-        surface2 = pg.transform.rotate(surface, rot)
+        orig_center=ellipse.center
+
+        # Focus
+        r = int(math.sqrt((w / 2) ** 2 - (h / 2) ** 2))
+        pg.draw.circle(surface,WHITE,(int(w/2)-r,int(h/2)),1)
 
         s={}
-        s['pos']=pos
+        s['pos']=pos.coords()
+        s['surface']=surface
+        self.surfaces.append(s)
+
+        surface2 = pg.transform.rotate(surface, rot)
+        #surface2.fill((255,0,0))
+
+        # moves the rotated surface to match the center of the original one
+        rot_rect=surface2.get_rect()
+        new_center=rot_rect.center
+        deltax=orig_center[0]-new_center[0]
+        deltay=orig_center[1]-new_center[1]
+        pos+=Pos(deltax,deltay)
+
+        # moves to match the focus
+        # calculates the new position of the focus
+        orig_focus=Pos(-r,0)
+        newx = -r * math.cos(math.radians(rot))
+        newy = -r * math.sin(math.radians(rot))
+        # calculates the delta between the old and new focus
+        deltax=orig_focus.x-newx
+        deltay=orig_focus.y-newy
+        pos += Pos(deltax, deltay)
+
+        #surface2.fill((255,0,0))
+
+        s={}
+        s['pos']=pos.coords()
         s['surface']=surface2
         self.surfaces.append(s)
 

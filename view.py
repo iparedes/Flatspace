@@ -1,6 +1,7 @@
 import pygame as pg
 from display import *
 from geometry import *
+import math
 
 
 class View:
@@ -76,6 +77,28 @@ class View:
                 if rad==0:
                     rad=1
                 self.display.draw_circle(pos,rad)
+                # draw orbit
+                pos=self.trans(p.orbit.focus)
+                pos.x-=p.orbit.peri/self.mperpixel
+                pos.y-=p.orbit.b/self.mperpixel
+                width=2*p.orbit.a/self.mperpixel
+                height=2*p.orbit.b/self.mperpixel
+
+
+                j=math.sqrt(p.orbit.peri**2+p.orbit.b**2)
+                phi=math.atan(p.orbit.b/p.orbit.peri)
+                delta=phi-p.orbit.incl
+                v=j*math.cos(math.radians(delta))
+                pos.x-=int(v/self.mperpixel)
+
+                h=math.sqrt(p.orbit.apo**2+p.orbit.b**2)
+                gamma=math.atan(p.orbit.b/p.orbit.apo)
+                beta=p.orbit.incl+gamma
+                w=h*math.sin(math.radians(beta))
+                pos.y-=int(w/self.mperpixel)
+
+                self.display.draw_ellipse(pos,width,height,p.orbit.incl)
+
         t=str(self.area.center.x)+' , '+str(self.area.center.y)
         self.display.draw_text(20,20,t)
         self.display.draw()
