@@ -98,24 +98,26 @@ class Display:
         s['surface']=surface
         self.surfaces.append(s)
 
+    def draw_rectangle(self,pos,rect):
+        pass
 
     # Adds a ellipse to the surfaces to be blitted
     # pos is a Pos, the center of the ellipse
-    def draw_ellipse(self,pos,w,h,rot):
+    def draw_ellipse(self,pos,w,h,rot,color=WHITE):
         surface = pg.Surface((w,h),pg.SRCALPHA, 32)
         surface = surface.convert_alpha()
         size = (0, 0, w,h)
-        ellipse = pg.draw.ellipse(surface, WHITE, size,LINE_WIDTH)
+        ellipse = pg.draw.ellipse(surface, color, size,LINE_WIDTH)
         orig_center=ellipse.center
 
         # Focus
         r = int(math.sqrt((w / 2) ** 2 - (h / 2) ** 2))
         pg.draw.circle(surface,WHITE,(int(w/2)-r,int(h/2)),1)
 
-        s={}
-        s['pos']=pos.coords()
-        s['surface']=surface
-        self.surfaces.append(s)
+        # s={}
+        # s['pos']=pos.coords()
+        # s['surface']=surface
+        # self.surfaces.append(s)
 
         surface2 = pg.transform.rotate(surface, rot)
         #surface2.fill((255,0,0))
@@ -133,8 +135,8 @@ class Display:
         newx = -r * math.cos(math.radians(rot))
         newy = -r * math.sin(math.radians(rot))
         # calculates the delta between the old and new focus
-        deltax=orig_focus.x-newx
-        deltay=orig_focus.y-newy
+        deltax=(orig_focus.x-newx)
+        deltay=-(orig_focus.y-newy)
         pos += Pos(deltax, deltay)
 
         #surface2.fill((255,0,0))

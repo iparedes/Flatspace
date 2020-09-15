@@ -10,7 +10,7 @@ class View:
     # pos: center point of the view rectangle
     def __init__(self,System,pos=Pos(0,0),width=0):
         height = int(width * 0.75)
-        self.area=Rectangle(int(pos.x-width/2),int(pos.y-height/2),width,height)
+        self.area=Rectangle(int(pos.x-width/2),int(pos.y+height/2),width,height)
 
         self.scale=100
         self.system=System
@@ -55,7 +55,7 @@ class View:
             a=body.area
         except:
             r=body.radius
-            a=Rectangle(body.pos.x-r,body.pos.y-r,2*r,2*r)
+            a=Rectangle(body.pos.x-r,body.pos.y+r,2*r,2*r)
 
         return self.area.overlap(a)
 
@@ -83,24 +83,10 @@ class View:
                 pos.y-=p.orbit.b/self.mperpixel
                 width=2*p.orbit.a/self.mperpixel
                 height=2*p.orbit.b/self.mperpixel
+                self.display.draw_ellipse(pos,width,height,p.orbit.incl,(80,80,80))
 
-
-                j=math.sqrt(p.orbit.peri**2+p.orbit.b**2)
-                phi=math.atan(p.orbit.b/p.orbit.peri)
-                delta=phi-p.orbit.incl
-                v=j*math.cos(math.radians(delta))
-                pos.x-=int(v/self.mperpixel)
-
-                h=math.sqrt(p.orbit.apo**2+p.orbit.b**2)
-                gamma=math.atan(p.orbit.b/p.orbit.apo)
-                beta=p.orbit.incl+gamma
-                w=h*math.sin(math.radians(beta))
-                pos.y-=int(w/self.mperpixel)
-
-                self.display.draw_ellipse(pos,width,height,p.orbit.incl)
-
-        t=str(self.area.center.x)+' , '+str(self.area.center.y)
-        self.display.draw_text(20,20,t)
+        #t=str(self.area.center.x)+' , '+str(self.area.center.y)
+        #self.display.draw_text(20,20,t)
         self.display.draw()
 
 
