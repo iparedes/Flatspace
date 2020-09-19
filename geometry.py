@@ -43,9 +43,9 @@ class Rectangle:
     @center.setter
     # p: tupla (x,y)
     def center(self,p):
-        x=p[0]
-        y=p[1]
-        self._center=Pos(x,y)
+        x=p.x
+        y=p.y
+        self._center=p
         self._left=int(x-(self.width/2))
         self._top = int(y + (self.height / 2))
         self._right = self._left + self._width

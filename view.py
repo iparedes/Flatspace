@@ -45,7 +45,7 @@ class View:
             hori_step = 0
         else:
             hori_step = self.area.width / x
-        p = (self.area.center.x + hori_step, self.area.center.y + vert_step)
+        p = Pos(self.area.center.x + hori_step, self.area.center.y + vert_step)
         self.area.center = p
         # print(self.area.__dict__)
         # print(self.area.center.__dict__)
@@ -80,8 +80,8 @@ class View:
                 rad=1
             self.display.draw_circle(pos, rad)
         for p in self.system.Planets:
-            t="Rendering "+p.name
-            print(t)
+            #t="Rendering "+p.name
+            #print(t)
             if self.in_view(p):
                 pos = self.trans(p.pos)
                 rad = int(p.radius / self.mperpixel)

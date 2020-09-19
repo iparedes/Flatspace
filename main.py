@@ -72,6 +72,9 @@ def main():
     S.add_planet("Earth", 5.97*10**24, 6.38*10**6, 1.47*10**11, 1.52*10**11, 0, 60)
     S.add_planet("Mars", 0.642 * 10 ** 24, 3.40 * 10 ** 6, 2.07 * 10 ** 11, 2.49 * 10 ** 11, 0, 60)
     S.add_planet("Jupiter", 1898 * 10 ** 24, 7.15 * 10 ** 7, 7.41 * 10 ** 11, 8.17 * 10 ** 11, 3, 90)
+    S.add_planet("Saturn", 568 * 10 ** 24, 6.03 * 10 ** 7, 1.35 * 10 ** 12, 1.51 * 10 ** 12, 3, 120)
+    S.add_planet("Uranus", 86.8 * 10 ** 24, 2.56 * 10 ** 7, 2.74 * 10 ** 12, 3.00 * 10 ** 12, 1, 150)
+    S.add_planet("Neptune", 102 * 10 ** 24, 2.48 * 10 ** 7, 4.44 * 10 ** 12, 4.55 * 10 ** 12, 2, 180)
     V = View(S, pg.Vector2(0, 0), 4.6*10**12)
 
     print(V.area.__dict__)
@@ -82,9 +85,11 @@ def main():
     #     rot+=10
     # V.display.draw()
 
+    timer=0
+    time_delta=0
     is_running = True
     while is_running:
-        time_delta = V.display.clock.tick(60) / 1000.0
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 is_running = False
@@ -104,6 +109,30 @@ def main():
                     if event.ui_element == V.display.right_button:
                         V.move(MOVE_FACTOR, 0)
 
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if timer == 0:  # First mouse click.
+                        print('click')
+                        timer = 0.001  # Start the timer.
+                    # Click again before 0.5 seconds to double click.
+                    elif timer < 0.2:
+                        print('double click')
+                        timer = 0
+                        mousex, mousey = pg.mouse.get_pos()
+                        x = V.area.left + (mousex * V.mperpixel)
+                        y = V.area.top - (mousey * V.mperpixel)
+                        V.area.center=Pos(x,y)
+                        V.zoom(ZOOM_FACTOR)
+
+            # Increase timer after mouse was pressed the first time.
+            if timer != 0:
+                timer += time_delta
+                # Reset after 0.5 seconds.
+                if timer >= 0.2:
+                    print('too late')
+                    timer = 0
+
+
             V.display.manager.process_events(event)
             mousex, mousey = pg.mouse.get_pos()
             t = str(mousex) + ' , ' + str(mousey)
@@ -112,6 +141,8 @@ def main():
             y = V.area.top - (mousey * V.mperpixel)
             t = str(x) + ' , ' + str(y)
             V.display.draw_text(20, 20, t)
+
+        time_delta = V.display.clock.tick(60) / 1000.0
 
         V.render()
         V.display.manager.update(time_delta)
