@@ -31,7 +31,7 @@ class Rectangle:
         self._bottom=self._top-self._height
         self._right=self._left+self._width
 
-    def intersects(self,other):
+    def overlap(self,other):
         res= self.left > other.right or self.right < other.left or \
             self.top<other.bottom or self.bottom > other.top
         return not res
@@ -46,8 +46,10 @@ class Rectangle:
         x=p[0]
         y=p[1]
         self._center=Pos(x,y)
-        self.left=int(x-(self.width/2))
-        self.top = int(y - (self.height / 2))
+        self._left=int(x-(self.width/2))
+        self._top = int(y + (self.height / 2))
+        self._right = self._left + self._width
+        self._bottom = self._top - self._height
 
     @property
     def left(self):
@@ -96,7 +98,8 @@ class Rectangle:
     @width.setter
     def width(self, v):
         self._width = v
-        self.left = self._center.x - int(v / 2)
+        self._left = self._center.x - int(v / 2)
+        self._right=self._left + self._width
 
 
     @property
@@ -105,18 +108,19 @@ class Rectangle:
     @height.setter
     def height(self, v):
         self._height = v
-        self.top=self._center.y + int(v / 2)
+        self._top=self._center.y + int(v / 2)
+        self._bottom=self._top-self._height
 
 
-# ****** CHECK THE OVERLAP FUNCTION ********
-    # True if there is overlap between self and r
-    def overlap(self,r):
-        dx=min(self.left+self.width,r.left+r.width)-max(self.left,r.left)
-        dy = min(self.top + self.height, r.top + r.height) - max(self.top, r.top)
-        if (dx>=0) and (dy>=0):
-            return True
-        else:
-            return False
+# # ****** CHECK THE OVERLAP FUNCTION ********
+#     # True if there is overlap between self and r
+#     def overlap(self,r):
+#         dx=min(self.left+self.width,r.left+r.width)-max(self.left,r.left)
+#         dy = min(self.top + self.height, r.top + r.height) - max(self.top, r.top)
+#         if (dx>=0) and (dy>=0):
+#             return True
+#         else:
+#             return False
 
 # class Rectangle:
 #
