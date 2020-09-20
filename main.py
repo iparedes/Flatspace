@@ -66,7 +66,7 @@ def main():
 
     S.Sol.pos = Pos(0, 0)
 
-    # name, mass, radius, peri, apo, incl=0, init_pos=0
+    name, mass, radius, peri, apo, incl=0, init_pos=0
     S.add_planet("Mercury", 0.33*10**24, 2.44*10**6, 4.6*10**10, 6.98*10**10, 7, 0)
     S.add_planet("Venus", 4.87 * 10 ** 24, 6.05 * 10 ** 6, 1.08 * 10 ** 11, 1.09 * 10 ** 11, 0, 30)
     S.add_planet("Earth", 5.97*10**24, 6.38*10**6, 1.47*10**11, 1.52*10**11, 0, 60)
@@ -75,7 +75,10 @@ def main():
     S.add_planet("Saturn", 568 * 10 ** 24, 6.03 * 10 ** 7, 1.35 * 10 ** 12, 1.51 * 10 ** 12, 3, 120)
     S.add_planet("Uranus", 86.8 * 10 ** 24, 2.56 * 10 ** 7, 2.74 * 10 ** 12, 3.00 * 10 ** 12, 1, 150)
     S.add_planet("Neptune", 102 * 10 ** 24, 2.48 * 10 ** 7, 4.44 * 10 ** 12, 4.55 * 10 ** 12, 2, 180)
+
+    #S.add_planet("Neptune", 102 * 10 ** 24, 2.48 * 10 ** 7, 4.44 * 10 ** 10, 50 * 10 ** 10, 30, 180)
     V = View(S, pg.Vector2(0, 0), 4.6*10**12)
+    #V = View(S, pg.Vector2(0, 0), 4.6 * 10 ** 11)
 
     print(V.area.__dict__)
     print(V.area.center.__dict__)
@@ -143,7 +146,7 @@ def main():
             V.display.draw_text(20, 20, t)
 
         time_delta = V.display.clock.tick(60) / 1000.0
-
+        print(time_delta)
         V.render()
         V.display.manager.update(time_delta)
         V.display.manager.draw_ui(V.display.screen)

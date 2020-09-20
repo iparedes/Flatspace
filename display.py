@@ -104,23 +104,23 @@ class Display:
     # Adds a ellipse to the surfaces to be blitted
     # pos is a Pos, the center of the ellipse
     def draw_ellipse(self,pos,w,h,rot,color=WHITE):
+
+        # draws the ellipse alligned to the XY axis as if rot=0
         surface = pg.Surface((w,h),pg.SRCALPHA, 32)
         surface = surface.convert_alpha()
         size = (0, 0, w,h)
         ellipse = pg.draw.ellipse(surface, color, size,LINE_WIDTH)
+        # saves the center of the ellipse for later
         orig_center=ellipse.center
 
-        # Focus
+        # Draw the focus (the on in the left side)
+        # r is the distance from the center to the focus
         r = int(math.sqrt((w / 2) ** 2 - (h / 2) ** 2))
         pg.draw.circle(surface,WHITE,(int(w/2)-r,int(h/2)),1)
 
-        # s={}
-        # s['pos']=pos.coords()
-        # s['surface']=surface
-        # self.surfaces.append(s)
-
+        # Creates a new rotated surface. Beware that it is not really a rotated suface, but a bigger new one that
+        # has the rotated original surface inside
         surface2 = pg.transform.rotate(surface, rot)
-        #surface2.fill((255,0,0))
 
         # moves the rotated surface to match the center of the original one
         rot_rect=surface2.get_rect()
@@ -128,6 +128,8 @@ class Display:
         deltax=orig_center[0]-new_center[0]
         deltay=orig_center[1]-new_center[1]
         pos+=Pos(deltax,deltay)
+        # so at this point, we have the original ellipse rotated from the center
+        # but we need it rotated from the focus, so we need to move it again
 
         # moves to match the focus
         # calculates the new position of the focus

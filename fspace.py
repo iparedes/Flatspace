@@ -35,25 +35,43 @@ class Planet(Body):
     # Returns the position of a planet at a given angle of the orbit
     # angle is the angle relative to the orbit, with 0 at the apoapsis
     # the position takes into account the angle relative to the orbit and the inclination of the orbit
-    def pos_planet(self, angle):
-        # Let's calculate the position for the orbit with 0 incl
-        a = self.orbit.a
-        b = self.orbit.b
+    # def pos_planet(self, angle):
+    #     # Let's calculate the position for the orbit with 0 incl
+    #     a = self.orbit.a
+    #     b = self.orbit.b
+    #
+    #     oneovera2 = 1 / a ** 2
+    #     tan2overb2 = ((math.tan(math.radians(angle))) ** 2) / (b ** 2)
+    #     x = math.sqrt(1 / (oneovera2 + tan2overb2))
+    #     y = math.tan(math.radians(angle)) * x
+    #     # x and y are relative to the center of the orbit
+    #     Q = Pos(x, y)
+    #     # distance to the center
+    #     d = Q.distance(Pos(0,0))
+    #
+    #     # Now we rotate the Position the angle of inclination of the orbit
+    #     x = d * math.cos(math.radians(angle + self.orbit.incl))
+    #     y = d * math.sin(math.radians(angle + self.orbit.incl))
+    #     Q=Pos(x,y)
+    #     pos = Q + self.orbit.center
+    #     return pos
 
-        oneovera2 = 1 / a ** 2
-        tan2overb2 = ((math.tan(math.radians(angle))) ** 2) / (b ** 2)
-        x = math.sqrt(1 / (oneovera2 + tan2overb2))
-        y = math.tan(math.radians(angle)) * x
-        # x and y are relative to the center of the orbit
-        Q = Pos(x, y)
-        # distance to the center
-        d = Q.distance(Pos(0,0))
+    def pos_planet(self,angle):
+        # angle is the alfa
+        # orbit.incl is the theta
+        alfa=angle
+        sinalfa = math.sin(math.radians(alfa))
+        cosalfa=math.cos(math.radians(alfa))
+        a=self.orbit.a
+        b=self.orbit.b
+        sintheta=self.orbit._sintheta
+        costheta=self.orbit._costheta
 
-        # Now we rotate the Position the angle of inclination of the orbit
-        x = d * math.cos(math.radians(angle + self.orbit.incl))
-        y = d * math.sin(math.radians(angle + self.orbit.incl))
+        x=int((a*cosalfa*costheta)-(b*sinalfa*sintheta))
+        y=int((a*cosalfa*sintheta)+(b*sinalfa*costheta))
+
         Q=Pos(x,y)
-        pos = Q + self.orbit.center
+        pos=Q+self.orbit.center
         return pos
 
 
@@ -96,3 +114,7 @@ class Orbit:
         self.b = int(math.sqrt((self.a ** 2) - (self.c ** 2)))
         self.focus = None
         self.center = None  # position
+
+        # to accelerate calculations
+        self._costheta=math.cos(math.radians(incl))
+        self._sintheta = math.sin(math.radians(incl))
