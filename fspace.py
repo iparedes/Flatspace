@@ -20,9 +20,15 @@ class Body:
         self.parent = parent
         self.orbit.focus = parent.pos
 
+        #x=self.orbit.c
+        #y=0
+        #t=Pos(x,y)
+        # sets the center of the orbit in relation to the focus to account for the inclination shift
         x = self.orbit.c * math.cos(math.radians(self.orbit.incl))
         y = self.orbit.c * math.sin(math.radians(self.orbit.incl))
-        t = Pos(self.orbit.focus.x + x, self.orbit.focus.y + y)
+        # **
+        #t = Pos(self.orbit.focus.x + x, self.orbit.focus.y + y)
+        t = Pos(self.orbit.focus.x - x, self.orbit.focus.y - y)
         self.orbit.center = t
 
 

@@ -1,5 +1,8 @@
 import pygame
 import math
+from display import *
+from view import *
+from fspace import *
 
 
 def draw_ellipse(screen,pos,w,h,rot):
@@ -18,36 +21,40 @@ def draw_ellipse(screen,pos,w,h,rot):
     screen.blit(surface2,rot_rect)
 
 
-
-
-
 pygame.init()
 pygame.display.set_caption("Test")
 screen = pygame.display.set_mode((800,600))
 
-beta=30
-h=0
-k=0
+S = SSystem()
+S.Sol.mass = 1000
+S.Sol.radius = 1000
+S.Sol.pos = Pos(0, 0)
+S.add_planet("test", 10,100,10000,50000,30)
+V = View(S, pg.Vector2(0, 0), 160000)
 
-a=100
-b=30
-
-sinbeta=math.sin(math.radians(-beta))
-cosbeta=math.cos(math.radians(-beta))
-
-
-for alfa in range(0,360,5):
-    sinalfa=math.sin(math.radians(alfa))
-    cosalfa = math.cos(math.radians(alfa))
-
-    x=int((a*cosalfa*cosbeta)-(b*sinalfa*sinbeta))
-    y=int((a*cosalfa*sinbeta)+(b*sinalfa*cosbeta))
-
-    x+=100
-    y+=100
-
-    print((x,y))
-    screen.set_at((x,y),(250,250,250))
+# beta=30
+# h=0
+# k=0
+#
+# a=100
+# b=30
+#
+# sinbeta=math.sin(math.radians(-beta))
+# cosbeta=math.cos(math.radians(-beta))
+#
+#
+# for alfa in range(0,360,5):
+#     sinalfa=math.sin(math.radians(alfa))
+#     cosalfa = math.cos(math.radians(alfa))
+#
+#     x=int((a*cosalfa*cosbeta)-(b*sinalfa*sinbeta))
+#     y=int((a*cosalfa*sinbeta)+(b*sinalfa*cosbeta))
+#
+#     x+=100
+#     y+=100
+#
+#     print((x,y))
+#     screen.set_at((x,y),(250,250,250))
 
 done=False
 while not done:
@@ -55,6 +62,7 @@ while not done:
                 if event.type == pygame.QUIT:
                         done = True
 
+        V.render()
         pygame.display.flip()
 
 # screen.fill((0, 0, 0))

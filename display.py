@@ -113,10 +113,15 @@ class Display:
         # saves the center of the ellipse for later
         orig_center=ellipse.center
 
-        # Draw the focus (the on in the left side)
+        # Draw the focus (the one in the left side)
         # r is the distance from the center to the focus
+
         r = int(math.sqrt((w / 2) ** 2 - (h / 2) ** 2))
-        pg.draw.circle(surface,WHITE,(int(w/2)-r,int(h/2)),1)
+
+        # **
+        #pg.draw.circle(surface,WHITE,(int(w/2)-r,int(h/2)),1)
+        pg.draw.circle(surface,WHITE,(int(w/2)+r,int(h/2)),1)
+
 
         # Creates a new rotated surface. Beware that it is not really a rotated suface, but a bigger new one that
         # has the rotated original surface inside
@@ -134,11 +139,15 @@ class Display:
         # moves to match the focus
         # calculates the new position of the focus
         orig_focus=Pos(-r,0)
-        newx = -r * math.cos(math.radians(rot))
-        newy = -r * math.sin(math.radians(rot))
+        # **
+        #newx = -r * math.cos(math.radians(rot))
+        #newy = -r * math.sin(math.radians(rot))
+        newx = r * math.cos(math.radians(rot))
+        newy = r * math.sin(math.radians(rot))
         # calculates the delta between the old and new focus
+        #
         deltax=(orig_focus.x-newx)
-        deltay=-(orig_focus.y-newy)
+        deltay=(newy-orig_focus.y)
         pos += Pos(deltax, deltay)
 
         #surface2.fill((255,0,0))

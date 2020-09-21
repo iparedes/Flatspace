@@ -66,7 +66,7 @@ def main():
 
     S.Sol.pos = Pos(0, 0)
 
-    name, mass, radius, peri, apo, incl=0, init_pos=0
+    #name, mass, radius, peri, apo, incl=0, init_pos=0
     S.add_planet("Mercury", 0.33*10**24, 2.44*10**6, 4.6*10**10, 6.98*10**10, 7, 0)
     S.add_planet("Venus", 4.87 * 10 ** 24, 6.05 * 10 ** 6, 1.08 * 10 ** 11, 1.09 * 10 ** 11, 0, 30)
     S.add_planet("Earth", 5.97*10**24, 6.38*10**6, 1.47*10**11, 1.52*10**11, 0, 60)
@@ -121,11 +121,11 @@ def main():
                     elif timer < 0.2:
                         print('double click')
                         timer = 0
-                        mousex, mousey = pg.mouse.get_pos()
-                        x = V.area.left + (mousex * V.mperpixel)
-                        y = V.area.top - (mousey * V.mperpixel)
-                        V.area.center=Pos(x,y)
-                        V.zoom(ZOOM_FACTOR)
+                        # mousex, mousey = pg.mouse.get_pos()
+                        # x = V.area.left + (mousex * V.mperpixel)
+                        # y = V.area.top - (mousey * V.mperpixel)
+                        # V.area.center=Pos(x,y)
+                        # V.zoom(ZOOM_FACTOR)
 
             # Increase timer after mouse was pressed the first time.
             if timer != 0:
