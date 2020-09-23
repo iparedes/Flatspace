@@ -95,6 +95,15 @@ class View:
                 width = 2 * p.orbit.a / self.mperpixel
                 height = 2 * p.orbit.b / self.mperpixel
                 self.display.draw_ellipse(pos, width, height, p.orbit.incl, (80, 80, 80))
+        for o in self.objects:
+            if self.in_view(o):
+                pos=self.trans(o.pos)
+                # OjO if we add more things than circles we need to manage the non-existence of the radius
+                rad = int(o.radius / self.mperpixel)
+                self.display.draw_circle(pos,rad)
+
+            pass
+
 
         # t=str(self.area.center.x)+' , '+str(self.area.center.y)
         # self.display.draw_text(20,20,t)

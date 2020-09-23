@@ -7,18 +7,25 @@ from geometry import *
 # radius in m
 # orbit data in m
 
+G=6.673*10**(-11) # N•m2/kg2.
+
 class Body:
     def __init__(self, mass=0):
-        self.pos = pg.Vector2(0, 0)
+        self.pos = Pos(0, 0) # True anomaly
+        self.posE = Pos(0,0) # Eccentric anomaly
         self.mass = mass
         self.orbit = None
         self.parent = None
         self.name = ""
+        self.T=0 # Orbital period
 
     def set_orbit(self, orbit, parent):
         self.orbit = orbit
         self.parent = parent
         self.orbit.focus = parent.pos
+        self.T=(2*math.pi)*math.sqrt(self.orbit.a**3/G*self.parent.mass)
+        # OjO
+        self.T=864000
 
         #x=self.orbit.c
         #y=0
@@ -30,6 +37,53 @@ class Body:
         #t = Pos(self.orbit.focus.x + x, self.orbit.focus.y + y)
         t = Pos(self.orbit.focus.x - x, self.orbit.focus.y - y)
         self.orbit.center = t
+
+    # places the body in the orbit at a given angle of the true anomaly
+    def set_pos(self,angle):
+        # angle is the alfa. True anomaly. 0 degrees is at periapsis
+        # orbit.incl is the theta
+        alfa=angle
+        sinalfa = math.sin(math.radians(alfa))
+        cosalfa=math.cos(math.radians(alfa))
+        a=self.orbit.a
+        b=self.orbit.b
+        sintheta=self.orbit._sintheta
+        costheta=self.orbit._costheta
+
+        x=int((a*cosalfa*costheta)-(b*sinalfa*sintheta))
+        y=int((a*cosalfa*sintheta)+(b*sinalfa*costheta))
+
+        Q=Pos(x,y)
+        pos=Q+self.orbit.center
+        return pos
+
+    # sets the pos of the body according to the time (in seconds) since the periapsis
+    def set_pos_time(self,t):
+        # E is the eccentric anomaly t seconds after the periapsis
+        E=(t*2*math.pi)/self.T
+        # calculate the position of E
+        x=self.orbit.a*math.cos(E)
+        y = self.orbit.a * math.sin(E)
+        # calculate the position of the true anomaly
+        x+=self.orbit.center.x
+        y=y*(self.orbit.b/self.orbit.a)
+        y+=self.orbit.center.y
+        self.pos=Pos(x,y)
+
+
+    def get_eccentric_anomaly_pos(self):
+        # get the pos of eccentric anomaly
+        y=self.pos.x*(self.orbit.a/self.orbit.b)
+        E=Pos(x,y)
+        return E
+
+    # returns the angle of the true anomaly (in degrees=
+    def get_true_anomaly(self):
+        # calculates distance from the current position to the focus
+        d=self.pos.distance(self.parent.pos)
+        # the sin of the true anomaly is the y coord over the distance
+        nu=math.asin(self.pos.y/d)
+        return math.radians(nu)
 
 
 class Planet(Body):
@@ -62,29 +116,35 @@ class Planet(Body):
     #     pos = Q + self.orbit.center
     #     return pos
 
-    def pos_planet(self,angle):
-        # angle is the alfa
-        # orbit.incl is the theta
-        alfa=angle
-        sinalfa = math.sin(math.radians(alfa))
-        cosalfa=math.cos(math.radians(alfa))
-        a=self.orbit.a
-        b=self.orbit.b
-        sintheta=self.orbit._sintheta
-        costheta=self.orbit._costheta
-
-        x=int((a*cosalfa*costheta)-(b*sinalfa*sintheta))
-        y=int((a*cosalfa*sintheta)+(b*sinalfa*costheta))
-
-        Q=Pos(x,y)
-        pos=Q+self.orbit.center
-        return pos
+    # def pos_planet(self,angle):
+    #     # angle is the alfa. True anomaly. 0 degrees is at periapsis
+    #     # orbit.incl is the theta
+    #     alfa=angle
+    #     sinalfa = math.sin(math.radians(alfa))
+    #     cosalfa=math.cos(math.radians(alfa))
+    #     a=self.orbit.a
+    #     b=self.orbit.b
+    #     sintheta=self.orbit._sintheta
+    #     costheta=self.orbit._costheta
+    #
+    #     x=int((a*cosalfa*costheta)-(b*sinalfa*sintheta))
+    #     y=int((a*cosalfa*sintheta)+(b*sinalfa*costheta))
+    #
+    #     Q=Pos(x,y)
+    #     pos=Q+self.orbit.center
+    #     return pos
 
 
 class Sun(Body):
     def __init__(self, mass=0, radius=0):
         Body.__init__(self, mass)
         self.radius = radius
+
+class Circle(Body):
+    def __init__(self,pos,radius):
+        Body.__init__(self,0)
+        self.radius=radius
+        self.pos=pos
 
 
 class SSystem:
@@ -98,12 +158,12 @@ class SSystem:
         O = Orbit(peri, apo, incl)
         P.set_orbit(O, self.Sol)
 
-        P.pos = P.pos_planet(init_pos)
+        P.pos = P.set_pos(init_pos)
         self.Planets.append(P)
+        return P
 
 
 class Orbit:
-
     def __init__(self, peri, apo, incl=0):
         if (peri > apo):
             (peri, apo) = (apo, peri)

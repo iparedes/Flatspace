@@ -25,40 +25,26 @@ pygame.init()
 pygame.display.set_caption("Test")
 screen = pygame.display.set_mode((800,600))
 
-angle=0
+time=0
 
 S = SSystem()
-S.Sol.mass = 1000
+S.Sol.mass = 1.989*10**30
 S.Sol.radius = 1000
 S.Sol.pos = Pos(0, 0)
-S.add_planet("test", 200,2000,10000,50000,0,angle)
-V = View(S, pg.Vector2(0, 0), 160000)
+P=S.add_planet("test", 200,2000,10000,100000,0,0)
+V = View(S, pg.Vector2(0, 0), 250000)
 
-# beta=30
-# h=0
-# k=0
-#
-# a=100
-# b=30
-#
-# sinbeta=math.sin(math.radians(-beta))
-# cosbeta=math.cos(math.radians(-beta))
-#
-#
-# for alfa in range(0,360,5):
-#     sinalfa=math.sin(math.radians(alfa))
-#     cosalfa = math.cos(math.radians(alfa))
-#
-#     x=int((a*cosalfa*cosbeta)-(b*sinalfa*sinbeta))
-#     y=int((a*cosalfa*sinbeta)+(b*sinalfa*cosbeta))
-#
-#     x+=100
-#     y+=100
-#
-#     print((x,y))
-#     screen.set_at((x,y),(250,250,250))
+P.name="xxx"
+center=P.orbit.center
+radius=P.orbit.a
+C=Circle(center,radius)
+V.objects.append(C)
+
 
 done=False
+nu=S.Planets[0].get_true_anomaly()
+oldnu=nu
+print(nu)
 while not done:
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -66,9 +52,14 @@ while not done:
 
         V.render()
         pygame.display.flip()
-        angle+=5
-        pos=S.Planets[0].pos_planet(angle)
-        S.Planets[0].pos=pos
+        time+=3600
+        #pos=S.Planets[0].set_pos(angle)
+        S.Planets[0].set_pos_time(time)
+        nu=S.Planets[0].get_true_anomaly()
+        print(abs(nu-oldnu))
+        oldnu=nu
+
+        #S.Planets[0].pos=pos
         pg.time.wait(100)
 
 # screen.fill((0, 0, 0))
