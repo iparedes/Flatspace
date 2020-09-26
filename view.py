@@ -102,8 +102,6 @@ class View:
                 rad = int(o.radius / self.mperpixel)
                 self.display.draw_circle(pos,rad)
 
-            pass
-
 
         # t=str(self.area.center.x)+' , '+str(self.area.center.y)
         # self.display.draw_text(20,20,t)

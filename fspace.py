@@ -63,24 +63,22 @@ class Body:
     def set_pos_time(self, t):
         # E is the eccentric anomaly t seconds after the periapsis
         E = (t * 2 * math.pi) / self.T
-        # calculate the position of E
+        # calculate the position of E without accounting for the orbit inclination
         x = self.orbit.a * math.cos(E)
         y = self.orbit.a * math.sin(E)
         # calculate the position of the true anomaly
-        #x += self.orbit.center.x
         # x is the same
         y = y * (self.orbit.b / self.orbit.a)
-        #y += self.orbit.center.y
 
         # account for the inclination of the orbit
         beta = math.radians(self.orbit.incl)
         newx = (x * math.cos(beta)) - (y * math.sin(beta))
         newy = (y * math.cos(beta)) + (x * math.sin(beta))
-        q = self.parent.pos
         x = self.orbit.center.x + newx
         y = self.orbit.center.y + newy
         pos = Pos(x, y)
         self.pos = pos
+        return pos
 
     def get_eccentric_anomaly_pos(self):
         # get the pos of eccentric anomaly

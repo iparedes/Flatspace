@@ -1,3 +1,6 @@
 
 
 -Logging to file
+
+
+-Draw orbit when in view even when the planet is not
