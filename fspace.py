@@ -2,87 +2,98 @@ import math
 import pygame as pg
 from geometry import *
 
-
 # mass in kg
 # radius in m
 # orbit data in m
 
-G=6.673*10**(-11) # N•m2/kg2.
+G = 6.673 * 10 ** (-11)  # N•m2/kg2.
+
 
 class Body:
     def __init__(self, mass=0):
-        self.pos = Pos(0, 0) # True anomaly
-        self.posE = Pos(0,0) # Eccentric anomaly
+        self.pos = Pos(0, 0)  # True anomaly
+        self.posE = Pos(0, 0)  # Eccentric anomaly
         self.mass = mass
         self.orbit = None
         self.parent = None
         self.name = ""
-        self.T=0 # Orbital period
+        self.T = 0  # Orbital period
 
     def set_orbit(self, orbit, parent):
         self.orbit = orbit
         self.parent = parent
         self.orbit.focus = parent.pos
-        self.T=(2*math.pi)*math.sqrt(self.orbit.a**3/G*self.parent.mass)
+        self.T = (2 * math.pi) * math.sqrt(self.orbit.a ** 3 / G * self.parent.mass)
         # OjO
-        self.T=864000
+        self.T = 864000
 
-        #x=self.orbit.c
-        #y=0
-        #t=Pos(x,y)
+        # x=self.orbit.c
+        # y=0
+        # t=Pos(x,y)
         # sets the center of the orbit in relation to the focus to account for the inclination shift
         x = self.orbit.c * math.cos(math.radians(self.orbit.incl))
         y = self.orbit.c * math.sin(math.radians(self.orbit.incl))
         # **
-        #t = Pos(self.orbit.focus.x + x, self.orbit.focus.y + y)
+        # t = Pos(self.orbit.focus.x + x, self.orbit.focus.y + y)
         t = Pos(self.orbit.focus.x - x, self.orbit.focus.y - y)
         self.orbit.center = t
 
     # places the body in the orbit at a given angle of the true anomaly
-    def set_pos(self,angle):
+    def set_pos(self, angle):
         # angle is the alfa. True anomaly. 0 degrees is at periapsis
         # orbit.incl is the theta
-        alfa=angle
+        alfa = angle
         sinalfa = math.sin(math.radians(alfa))
-        cosalfa=math.cos(math.radians(alfa))
-        a=self.orbit.a
-        b=self.orbit.b
-        sintheta=self.orbit._sintheta
-        costheta=self.orbit._costheta
+        cosalfa = math.cos(math.radians(alfa))
+        a = self.orbit.a
+        b = self.orbit.b
+        sintheta = self.orbit._sintheta
+        costheta = self.orbit._costheta
 
-        x=int((a*cosalfa*costheta)-(b*sinalfa*sintheta))
-        y=int((a*cosalfa*sintheta)+(b*sinalfa*costheta))
+        x = int((a * cosalfa * costheta) - (b * sinalfa * sintheta))
+        y = int((a * cosalfa * sintheta) + (b * sinalfa * costheta))
 
-        Q=Pos(x,y)
-        pos=Q+self.orbit.center
+        Q = Pos(x, y)
+        pos = Q + self.orbit.center
         return pos
 
+    # all the crap about the anomalys HAS to be relative to the orbit, no absolute values
+
     # sets the pos of the body according to the time (in seconds) since the periapsis
-    def set_pos_time(self,t):
+    def set_pos_time(self, t):
         # E is the eccentric anomaly t seconds after the periapsis
-        E=(t*2*math.pi)/self.T
+        E = (t * 2 * math.pi) / self.T
         # calculate the position of E
-        x=self.orbit.a*math.cos(E)
+        x = self.orbit.a * math.cos(E)
         y = self.orbit.a * math.sin(E)
         # calculate the position of the true anomaly
-        x+=self.orbit.center.x
-        y=y*(self.orbit.b/self.orbit.a)
-        y+=self.orbit.center.y
-        self.pos=Pos(x,y)
+        #x += self.orbit.center.x
+        # x is the same
+        y = y * (self.orbit.b / self.orbit.a)
+        #y += self.orbit.center.y
 
+        # account for the inclination of the orbit
+        beta = math.radians(self.orbit.incl)
+        newx = (x * math.cos(beta)) - (y * math.sin(beta))
+        newy = (y * math.cos(beta)) + (x * math.sin(beta))
+        q = self.parent.pos
+        x = self.orbit.center.x + newx
+        y = self.orbit.center.y + newy
+        pos = Pos(x, y)
+        self.pos = pos
 
     def get_eccentric_anomaly_pos(self):
         # get the pos of eccentric anomaly
-        y=self.pos.x*(self.orbit.a/self.orbit.b)
-        E=Pos(x,y)
+        y = self.pos.x * (self.orbit.a / self.orbit.b)
+        E = Pos(x, y)
         return E
 
-    # returns the angle of the true anomaly (in degrees=
+    # returns the angle of the true anomaly (in degrees)
     def get_true_anomaly(self):
         # calculates distance from the current position to the focus
-        d=self.pos.distance(self.parent.pos)
+        d = self.pos.distance(self.parent.pos)
         # the sin of the true anomaly is the y coord over the distance
-        nu=math.asin(self.pos.y/d)
+        nu = math.asin(self.pos.y / d)
         return math.radians(nu)
 
 
@@ -140,11 +151,12 @@ class Sun(Body):
         Body.__init__(self, mass)
         self.radius = radius
 
+
 class Circle(Body):
-    def __init__(self,pos,radius):
-        Body.__init__(self,0)
-        self.radius=radius
-        self.pos=pos
+    def __init__(self, pos, radius):
+        Body.__init__(self, 0)
+        self.radius = radius
+        self.pos = pos
 
 
 class SSystem:
@@ -182,5 +194,5 @@ class Orbit:
         self.center = None  # position
 
         # to accelerate calculations
-        self._costheta=math.cos(math.radians(incl))
+        self._costheta = math.cos(math.radians(incl))
         self._sintheta = math.sin(math.radians(incl))

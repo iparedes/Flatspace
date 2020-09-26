@@ -31,7 +31,7 @@ S = SSystem()
 S.Sol.mass = 1.989*10**30
 S.Sol.radius = 1000
 S.Sol.pos = Pos(0, 0)
-P=S.add_planet("test", 200,2000,10000,100000,0,0)
+P=S.add_planet("test", 200,2000,10000,100000,270,0)
 V = View(S, pg.Vector2(0, 0), 250000)
 
 P.name="xxx"
