@@ -33,7 +33,7 @@ class Display:
         #
         self.manager=pygame_gui.UIManager((self.WIDTH,self.HEIGHT))
         self.clock=pg.time.Clock()
-
+        self.time_button_text="x1"
         self.interface()
 
     def interface(self):
@@ -57,8 +57,8 @@ class Display:
                                                          text='<',
                                                          manager=self.manager)
 
-
         pos=(pos[0]+button_width+ button_sep,pos[1])
+        aux=pos
         self.right_button=pygame_gui.elements.UIButton(relative_rect=pg.Rect(pos, (button_width, button_width)),
                                                          text='>',
                                                          manager=self.manager)
@@ -72,8 +72,10 @@ class Display:
                                                          text='v',
                                                          manager=self.manager)
 
-
-
+        pos=(aux[0]+button_width+button_sep,aux[1])
+        self.time_button=pygame_gui.elements.UIButton(relative_rect=pg.Rect(pos, (button_width*2.5, button_width)),
+                                                         text=self.time_button_text,
+                                                         manager=self.manager)
 
     def draw(self):
         self.screen.fill((0,0,0))
@@ -159,7 +161,8 @@ class Display:
 
 
     def draw_text(self,x,y,text):
-        pygame_gui.elements.UIButton(relative_rect=pg.Rect((x,y), (200,20)),
+        width=len(text)*10
+        pygame_gui.elements.UILabel(relative_rect=pg.Rect((x,y), (width,20)),
                                                          text=text,
                                                          manager=self.manager)
 

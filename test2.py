@@ -40,6 +40,7 @@ radius=P.orbit.a
 C=Circle(center,radius)
 V.objects.append(C)
 
+clock = pg.time.Clock()
 
 done=False
 nu=S.Planets[0].get_true_anomaly()
@@ -60,7 +61,8 @@ while not done:
         oldnu=nu
 
         #S.Planets[0].pos=pos
-        pg.time.wait(100)
+        #pg.time.wait(100)
+        clock.tick(1)
 
 # screen.fill((0, 0, 0))
 # #pygame.draw.circle(screen, (255,255,255), (50,50),50, 1)

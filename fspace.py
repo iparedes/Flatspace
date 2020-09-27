@@ -6,7 +6,8 @@ from geometry import *
 # radius in m
 # orbit data in m
 
-G = 6.673 * 10 ** (-11)  # N•m2/kg2.
+G = 6.674E-11  # m•k-1•s-2.
+AU_meters = 1.496E11
 
 
 class Body:
@@ -23,9 +24,7 @@ class Body:
         self.orbit = orbit
         self.parent = parent
         self.orbit.focus = parent.pos
-        self.T = (2 * math.pi) * math.sqrt(self.orbit.a ** 3 / G * self.parent.mass)
-        # OjO
-        self.T = 864000
+        self.T = (2 * math.pi) * math.sqrt(self.orbit.a ** 3 / (G * self.parent.mass))
 
         # x=self.orbit.c
         # y=0
@@ -161,6 +160,7 @@ class SSystem:
     def __init__(self):
         self.Sol = Sun()
         self.Planets = []
+        self.Epoch=0 # time passed since the beginning of time
 
     # init_pos is the angle relative to the orbit, with 0 at the apoapsis
     def add_planet(self, name, mass, radius, peri, apo, incl=0, init_pos=0):
@@ -171,6 +171,12 @@ class SSystem:
         P.pos = P.set_pos(init_pos)
         self.Planets.append(P)
         return P
+
+    # updates the positions of the plantes according to a delta (seconds) in time
+    def update(self,delta):
+        self.Epoch+=delta
+        for p in self.Planets:
+            p.set_pos_time(self.Epoch)
 
 
 class Orbit:
